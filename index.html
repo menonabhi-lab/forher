@@ -3,106 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Memories ❤️</title>
+    <title>For My Valentine</title>
     <style>
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background-color: #000; overflow: hidden; font-family: 'Arial', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; background: black; overflow: hidden; font-family: sans-serif; }
 
-        #password-screen {
-            position: fixed; inset: 0; background: #fff0f3; z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-
-        /* The Grid Container */
-        #photo-wall {
-            position: fixed; inset: 0; display: grid;
-            /* Creates a grid that fills the screen */
-            grid-template-columns: repeat(6, 1fr); 
+        /* The Grid that fills the screen */
+        #photo-grid {
+            display: grid;
+            /* 6 columns and 5 rows = 30 spots */
+            grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(5, 1fr);
-            gap: 0; width: 100vw; height: 100vh;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
 
         .photo {
-            width: 100%; height: 100%; object-fit: cover;
-            opacity: 0; transform: scale(1.1);
-            transition: all 0.8s ease-out;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* This makes the photo fill its square without gaps */
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        .photo.visible { opacity: 1; transform: scale(1); }
-
-        /* The Question Card */
-        #card {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); text-align: center;
-            background: rgba(255, 255, 255, 0.95); padding: 50px;
-            border-radius: 30px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            z-index: 500; width: 80%; max-width: 500px;
+        /* The Question Overlay */
+        #overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4); /* Dims the photos slightly so text is readable */
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        h1 { color: #ff4d6d; font-size: 2.5rem; margin-bottom: 30px; }
-        .btn-yes { padding: 15px 40px; font-size: 1.5rem; background: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; }
-        
-        #startBtn {
-            position: fixed; z-index: 600; padding: 20px 40px;
-            background: #ff4d6d; color: white; border: none; border-radius: 50px;
-            font-size: 1.5rem; cursor: pointer; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+
+        #start-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            padding: 20px 40px;
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        h1 { color: #ff4d6d; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="password-screen">
-        <h2>Enter Secret Code</h2>
-        <input type="password" id="passInput" style="padding: 10px; border-radius: 10px;">
-        <button onclick="checkPass()" style="margin-top: 10px; padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 10px;">Go</button>
-    </div>
+    <button id="start-btn">Open My Heart ❤️</button>
 
-    <button id="startBtn" style="display:none;">Click for Surprise ❤️</button>
-    
-    <div id="photo-wall"></div>
+    <div id="photo-grid"></div>
 
-    <div id="card">
-        <h1>Will you be my Valentine? 🌹</h1>
-        <button class="btn-yes" onclick="alert('I love you! ❤️')">YES! ❤️</button>
+    <div id="overlay">
+        <div class="card">
+            <h1>Will you be my Valentine? 🌹</h1>
+            <button onclick="alert('I love you!')" style="padding:10px 20px; background:#ff4d6d; color:white; border:none; border-radius:10px;">YES! ❤️</button>
+        </div>
     </div>
 
     <script>
-        const secret = "love2026"; // Change this
-        const totalPhotos = 30;
+        const grid = document.getElementById('photo-grid');
+        const total = 30;
 
-        function checkPass() {
-            if(document.getElementById('passInput').value === secret) {
-                document.getElementById('password-screen').style.display = 'none';
-                document.getElementById('startBtn').style.display = 'block';
-            } else { alert("Try again!"); }
+        // Create the photos in the grid
+        for (let i = 1; i <= total; i++) {
+            const img = document.createElement('img');
+            img.src = `us (${i}).jpg`; // Matches your "us (1).jpg" naming
+            img.className = 'photo';
+            grid.appendChild(img);
         }
 
-        document.getElementById('startBtn').addEventListener('click', function() {
+        document.getElementById('start-btn').addEventListener('click', function() {
             this.style.display = 'none';
-            const wall = document.getElementById('photo-wall');
+            const allPhotos = document.querySelectorAll('.photo');
 
-            // 1. Create the wall
-            for (let i = 1; i <= totalPhotos; i++) {
-                const img = document.createElement('img');
-                img.src = `us (${i}).jpg`;
-                img.className = 'photo';
-                wall.appendChild(img);
-
-                // Staggered fade in
+            // 1. Pop photos one by one
+            allPhotos.forEach((img, index) => {
                 setTimeout(() => {
-                    img.classList.add('visible');
-                }, i * 150);
-            }
+                    img.style.opacity = '1';
+                }, index * 100); // Pops a photo every 0.1 seconds
+            });
 
-            // 2. Show the card after wall is full
+            // 2. Show message AFTER all photos are done (30 photos * 100ms = 3 seconds)
             setTimeout(() => {
-                document.getElementById('card').style.display = 'block';
-                // Add subtle darkening to photos so text is readable
-                wall.style.filter = "brightness(0.5)";
-                wall.style.transition = "filter 2s";
-            }, (totalPhotos * 150) + 500);
+                const overlay = document.getElementById('overlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => { overlay.style.opacity = '1'; }, 50);
+            }, 3500);
         });
     </script>
 </body>
