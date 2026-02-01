@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Valentine</title>
     <style>
+        /* Reset everything to zero to remove white space gaps */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100%; height: 100%; background: black; overflow: hidden; font-family: sans-serif; }
 
-        /* The Grid that fills the screen */
+        /* The Grid: 6 columns and 5 rows = 30 spots */
         #photo-grid {
             display: grid;
-            /* 6 columns and 5 rows = 30 spots */
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(5, 1fr);
             width: 100vw;
@@ -19,14 +19,16 @@
             position: fixed;
             top: 0;
             left: 0;
+            gap: 0; /* Ensures NO white space between photos */
         }
 
         .photo {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* This makes the photo fill its square without gaps */
+            object-fit: cover; /* Fills the square completely */
             opacity: 0;
             transition: opacity 0.5s ease;
+            /* No rotation here */
         }
 
         /* The Question Overlay */
@@ -34,7 +36,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4); /* Dims the photos slightly so text is readable */
+            background: rgba(0, 0, 0, 0.4); 
             z-index: 10;
             display: flex;
             justify-content: center;
@@ -49,6 +51,7 @@
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 90%;
         }
 
         #start-btn {
@@ -66,7 +69,7 @@
             cursor: pointer;
         }
 
-        h1 { color: #ff4d6d; margin-bottom: 20px; }
+        h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 2rem; }
     </style>
 </head>
 <body>
@@ -78,7 +81,7 @@
     <div id="overlay">
         <div class="card">
             <h1>Will you be my Valentine? 🌹</h1>
-            <button onclick="alert('I love you!')" style="padding:10px 20px; background:#ff4d6d; color:white; border:none; border-radius:10px;">YES! ❤️</button>
+            <button onclick="alert('I love you!')" style="padding:15px 30px; background:#ff4d6d; color:white; border:none; border-radius:10px; font-size: 1.2rem; cursor:pointer;">YES! ❤️</button>
         </div>
     </div>
 
@@ -89,8 +92,13 @@
         // Create the photos in the grid
         for (let i = 1; i <= total; i++) {
             const img = document.createElement('img');
-            img.src = `us (${i}).jpg`; // Matches your "us (1).jpg" naming
+            // IMPORTANT: This looks for "us (1).jpg" with the space
+            img.src = `us (${i}).jpg`; 
             img.className = 'photo';
+            
+            // If a photo fails to load, it will show a black square instead of an error icon
+            img.onerror = function() { this.style.backgroundColor = "black"; };
+            
             grid.appendChild(img);
         }
 
@@ -98,19 +106,19 @@
             this.style.display = 'none';
             const allPhotos = document.querySelectorAll('.photo');
 
-            // 1. Pop photos one by one
+            // 1. Reveal photos one by one
             allPhotos.forEach((img, index) => {
                 setTimeout(() => {
                     img.style.opacity = '1';
-                }, index * 100); // Pops a photo every 0.1 seconds
+                }, index * 80); // Slightly faster reveal
             });
 
-            // 2. Show message AFTER all photos are done (30 photos * 100ms = 3 seconds)
+            // 2. Show message AFTER all 30 photos are done
             setTimeout(() => {
                 const overlay = document.getElementById('overlay');
                 overlay.style.display = 'flex';
                 setTimeout(() => { overlay.style.opacity = '1'; }, 50);
-            }, 3500);
+            }, (total * 80) + 500);
         });
     </script>
 </body>
