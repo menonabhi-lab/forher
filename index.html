@@ -1,33 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise ❤️</title>
     <style>
-        body { background: #1a1a1a; margin: 0; display: flex; flex-wrap: wrap; }
-        .box { 
-            width: 150px; 
-            height: 150px; 
-            border: 2px solid yellow; /* If you see yellow boxes, the code is working */
-            background: #333;
+        #main-content { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        body { margin: 0; overflow: hidden; background-color: #fff0f3; font-family: 'Arial', sans-serif; }
+        
+        /* Floating Hearts & Poppers */
+        .decoration { position: absolute; font-size: 24px; animation: floatUp 4s linear infinite; opacity: 0; z-index: 1; }
+        @keyframes floatUp { 0% { transform: translateY(110vh); opacity: 1; } 100% { transform: translateY(-10vh); opacity: 0; } }
+
+        /* Photo Styles */
+        .photo {
+            position: absolute; width: 140px; height: 140px; border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: cover; border-radius: 10px;
+            transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
         }
-        img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* The Big Question Card */
+        #card {
+            display: none; background: rgba(255, 255, 255, 0.95); 
+            padding: 40px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            z-index: 100; border: 3px solid #ff4d6d; max-width: 80%;
+        }
+
+        h1 { color: #ff4d6d; margin-bottom: 20px; }
+        .btn-main { padding: 15px 40px; font-size: 1.3rem; background: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .btn-yes { background: #ff4d6d; padding: 10px 30px; color: white; border: none; border-radius: 10px; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div id="wrapper"></div>
+
+    <div id="main-content">
+        <button id="startBtn" class="btn-main">Click for a Surprise 🎁</button>
+        <div id="card">
+            <h1>Will you be my Valentine? 🌹</h1>
+            <p>Every moment with you is a gift.</p>
+            <button class="btn-yes" onclick="celebrate()">YES! ❤️</button>
+        </div>
+    </div>
 
     <script>
-        const wrapper = document.getElementById('wrapper');
-        for (let i = 1; i <= 30; i++) {
-            const div = document.createElement('div');
-            div.className = 'box';
-            const img = document.createElement('img');
-            
-            // LOOK AT THIS LINE:
-            // Ensure your folder doesn't have a hidden ".jpg" (like us (1).jpg.jpg)
-            img.src = `us (${i}).jpg`; 
-            
-            div.appendChild(img);
-            wrapper.appendChild(div);
+        // --- 1. CONFIGURATION ---
+        const secretPassword = "love2026"; // Change this to whatever you like!
+        const totalPhotos = 30; 
+
+        // --- 2. PASSWORD PROMPT ---
+        const userEntry = prompt("Enter our secret code:");
+        if (userEntry === secretPassword) {
+            document.getElementById('main-content').style.display = 'flex';
+        } else {
+            alert("Oops! Wrong code.");
+            document.body.innerHTML = "<h1 style='text-align:center; margin-top:20%;'>Access Denied 🔒</h1>";
+        }
+
+        // --- 3. THE MAGIC ---
+        document.getElementById('startBtn').addEventListener('click', function() {
+            this.style.display = 'none';
+
+            for (let i = 1; i <= totalPhotos; i++) {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    // This matches your filename: us (1).jpg, us (2).jpg, etc.
+                    img.src = `us (${i}).jpg`; 
+                    img.className = 'photo';
+                    
+                    // Random placement but keeps them mostly on screen
+                    img.style.left = (Math.random() * 70 + 5) + '%';
+                    img.style.top = (Math.random() * 70 + 5) + '%';
+                    img.style.transform = `rotate(${Math.random() * 40 - 20}deg) scale(1)`;
+                    
+                    document.body.appendChild(img);
+                }, i * 150); // Each photo pops 0.15s after the last
+            }
+
+            // Show the question card after the photos finish popping
+            setTimeout(() => {
+                document.getElementById('card').style.display = 'block';
+                startDecorations();
+            }, (totalPhotos * 150) + 500);
+        });
+
+        function startDecorations() {
+            const symbols = ['❤️', '💖', '🎉', '✨', '🌸'];
+            setInterval(() => {
+                const d = document.createElement('div');
+                d.className = 'decoration';
+                d.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                d.style.left = Math.random() * 100 + 'vw';
+                d.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(d);
+                setTimeout(() => d.remove(), 5000);
+            }, 300);
+        }
+
+        function celebrate() {
+            alert("I'm the luckiest person in the world! I love you! ❤️");
         }
     </script>
 </body>
