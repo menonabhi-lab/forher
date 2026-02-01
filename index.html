@@ -3,118 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Favorite Person</title>
+    <title>Our Memories ❤️</title>
     <style>
-        body { 
-            margin: 0; 
-            padding: 0;
-            overflow: hidden; 
-            background-color: #000; /* Black background makes colors pop */
-            font-family: 'Arial', sans-serif; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background-color: #000; overflow: hidden; font-family: 'Arial', sans-serif;
         }
 
-        #main-content { display: none; width: 100%; height: 100%; position: relative; }
+        #password-screen {
+            position: fixed; inset: 0; background: #fff0f3; z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
 
-        /* Photo Styles: No borders, fills screen */
+        /* The Grid Container */
+        #photo-wall {
+            position: fixed; inset: 0; display: grid;
+            /* Creates a grid that fills the screen */
+            grid-template-columns: repeat(6, 1fr); 
+            grid-template-rows: repeat(5, 1fr);
+            gap: 0; width: 100vw; height: 100vh;
+        }
+
         .photo {
-            position: absolute; 
-            width: 250px; /* Bigger photos to fill space */
-            height: 250px; 
-            object-fit: cover; 
-            border-radius: 4px; /* Slight roundness but no white border */
-            transform: scale(0); 
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 5;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; transform: scale(1.1);
+            transition: all 0.8s ease-out;
         }
 
-        /* The Question Card: Now fades in AFTER photos */
+        .photo.visible { opacity: 1; transform: scale(1); }
+
+        /* The Question Card */
         #card {
-            display: none; 
-            position: relative;
-            text-align: center; 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 50px; 
-            border-radius: 30px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            z-index: 100; /* Stays on top of photos */
-            animation: fadeIn 1.5s ease-in forwards;
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); text-align: center;
+            background: rgba(255, 255, 255, 0.95); padding: 50px;
+            border-radius: 30px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            z-index: 500; width: 80%; max-width: 500px;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
-        .btn-main { padding: 20px 40px; font-size: 1.5rem; background: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; }
-        .decoration { position: absolute; font-size: 30px; animation: floatUp 4s linear infinite; z-index: 101; }
-        @keyframes floatUp { 0% { transform: translateY(110vh); opacity: 1; } 100% { transform: translateY(-10vh); opacity: 0; } }
+        h1 { color: #ff4d6d; font-size: 2.5rem; margin-bottom: 30px; }
+        .btn-yes { padding: 15px 40px; font-size: 1.5rem; background: #ff4d6d; color: white; border: none; border-radius: 50px; cursor: pointer; }
+        
+        #startBtn {
+            position: fixed; z-index: 600; padding: 20px 40px;
+            background: #ff4d6d; color: white; border: none; border-radius: 50px;
+            font-size: 1.5rem; cursor: pointer; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 <body>
 
-    <div id="password-screen" style="text-align: center;">
-        <h2 style="color: white;">Enter Secret Code</h2>
-        <input type="password" id="passInput" style="padding: 10px; border-radius: 10px; border: none;">
-        <button onclick="checkPass()" style="padding: 10px 20px; border-radius: 10px; background: #ff4d6d; color: white; border: none;">Go</button>
+    <div id="password-screen">
+        <h2>Enter Secret Code</h2>
+        <input type="password" id="passInput" style="padding: 10px; border-radius: 10px;">
+        <button onclick="checkPass()" style="margin-top: 10px; padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 10px;">Go</button>
     </div>
 
-    <div id="main-content">
-        <button id="startBtn" class="btn-main" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 200;">Click to Open ❤️</button>
-        
-        <div id="card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-            <h1 style="color: #ff4d6d; font-size: 3rem;">Will you be my Valentine? 🌹</h1>
-            <button class="btn-main" onclick="alert('I love you! ❤️')">YES! ❤️</button>
-        </div>
+    <button id="startBtn" style="display:none;">Click for Surprise ❤️</button>
+    
+    <div id="photo-wall"></div>
+
+    <div id="card">
+        <h1>Will you be my Valentine? 🌹</h1>
+        <button class="btn-yes" onclick="alert('I love you! ❤️')">YES! ❤️</button>
     </div>
 
     <script>
-        const secret = "love2026"; 
+        const secret = "love2026"; // Change this
         const totalPhotos = 30;
 
         function checkPass() {
             if(document.getElementById('passInput').value === secret) {
                 document.getElementById('password-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('startBtn').style.display = 'block';
             } else { alert("Try again!"); }
         }
 
         document.getElementById('startBtn').addEventListener('click', function() {
             this.style.display = 'none';
+            const wall = document.getElementById('photo-wall');
 
+            // 1. Create the wall
             for (let i = 1; i <= totalPhotos; i++) {
+                const img = document.createElement('img');
+                img.src = `us (${i}).jpg`;
+                img.className = 'photo';
+                wall.appendChild(img);
+
+                // Staggered fade in
                 setTimeout(() => {
-                    const img = document.createElement('img');
-                    img.src = `us (${i}).jpg`; 
-                    img.className = 'photo';
-                    
-                    // Uses whole screen (0% to 90%)
-                    img.style.left = (Math.random() * 90) + '%';
-                    img.style.top = (Math.random() * 90) + '%';
-                    img.style.transform = `rotate(${Math.random() * 30 - 15}deg) scale(1.2)`;
-                    
-                    document.body.appendChild(img);
-                }, i * 100); 
+                    img.classList.add('visible');
+                }, i * 150);
             }
 
-            // WAIT for photos to finish, then show the card
+            // 2. Show the card after wall is full
             setTimeout(() => {
                 document.getElementById('card').style.display = 'block';
-                startHearts();
-            }, (totalPhotos * 100) + 1000); 
+                // Add subtle darkening to photos so text is readable
+                wall.style.filter = "brightness(0.5)";
+                wall.style.transition = "filter 2s";
+            }, (totalPhotos * 150) + 500);
         });
-
-        function startHearts() {
-            setInterval(() => {
-                const d = document.createElement('div');
-                d.className = 'decoration';
-                d.innerHTML = '❤️';
-                d.style.left = Math.random() * 100 + 'vw';
-                document.body.appendChild(d);
-                setTimeout(() => d.remove(), 4000);
-            }, 300);
-        }
     </script>
 </body>
 </html>
